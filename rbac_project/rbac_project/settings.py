@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rbac_app',  
 ]
 
 MIDDLEWARE = [
@@ -74,9 +76,17 @@ WSGI_APPLICATION = 'rbac_project.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "djongo",
+        "NAME": "rbac_db",  
+        "CLIENT": {
+            "host": "mongodb+srv://mohanganivada009:Jbs5p3KVImycBVex@cluster0.k46kt.mongodb.net/rbac_db?retryWrites=true&w=majority",
+            "authSource": "admin", 
+            "authMechanism": "SCRAM-SHA-1", 
+        },
+        "ENFORCE_SCHEMA": False,
+        "MONGO_URI_PATH": False,
+        "MONGO_AUTH": True,
     }
 }
 
