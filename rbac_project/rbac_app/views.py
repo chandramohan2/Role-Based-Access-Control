@@ -21,7 +21,7 @@ class UserListCreateView(APIView):
     def post(self, request):
         if request.data.get('role') != User.Role.ADMIN:
             return Response(
-                {'error': 'Only admin can create users'},
+                {'error': 'Only ADMIN can create users'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -58,7 +58,7 @@ class UserDetailView(APIView):
     def put(self, request, user_id):
         if request.user.role != User.Role.ADMIN:
             return Response(
-                {'error': 'Only admin can update users'},
+                {'error': 'Only ADMIN can update users'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -81,7 +81,7 @@ class UserDetailView(APIView):
     def delete(self, request, user_id):
         if request.user.role != User.Role.ADMIN:
             return Response(
-                {'error': 'Only admin can delete users'},
+                {'error': 'Only ADMIN can delete users'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -103,7 +103,7 @@ class PermissionListCreateView(APIView):
     def post(self, request):
         # if request.data.get('role') != User.Role.ADMIN:
         #     return Response(
-        #         {'error': 'Only admin can create permissions'},
+        #         {'error': 'Only ADMIN can create permissions'},
         #         status=status.HTTP_403_FORBIDDEN
         #     )
 
@@ -138,7 +138,7 @@ class RolePermissionListCreateView(APIView):
     def post(self, request):
         # if request.user.role != User.Role.ADMIN:
         #     return Response(
-        #         {'error': 'Only admin can assign permissions to roles'},
+        #         {'error': 'Only ADMIN can assign permissions to roles'},
         #         status=status.HTTP_403_FORBIDDEN
         #     )
 
@@ -195,42 +195,42 @@ class ValidateAccessView(APIView):
 
 class APIOneView(APIView):
     def get(self, request):
-        user = request.user  # Assume user is authenticated using middleware
+        user = request.user  
 
-        if user.role not in ['Staff', 'Supervisor', 'Admin']:
+        if user.role not in ['STAFF', 'SUPERVISOR', 'ADMIN']:
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         return Response(
-            {'message': 'Welcome to API_ONE! Accessible by Staff, Supervisor, and Admin'}
+            {'message': 'Welcome to API_ONE! Accessible by STAFF, SUPERVISOR, and ADMIN'}
         )
 class APITwoView(APIView):
     def get(self, request):
-        user = request.user  # Assume user is authenticated using middleware
+        user = request.user 
 
-        if user.role not in ['Supervisor', 'Admin']:
+        if user.role not in ['SUPERVISOR', 'ADMIN']:
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         return Response(
-            {'message': 'Welcome to API_TWO! Accessible by Supervisor and Admin'}
+            {'message': 'Welcome to API_TWO! Accessible by SUPERVISOR and ADMIN'}
         )
 class APIThreeView(APIView):
     def get(self, request):
-        user = request.user  # Assume user is authenticated using middleware
+        user = request.user  
 
-        if user.role != 'Admin':
+        if user.role != 'ADMIN':
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         return Response(
-            {'message': 'Welcome to API_THREE! Accessible by Admin Only'}
+            {'message': 'Welcome to API_THREE! Accessible by ADMIN Only'}
         )
 
 class AuditLogListView(APIView):
