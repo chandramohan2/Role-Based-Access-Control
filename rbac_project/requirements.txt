@@ -1,0 +1,7 @@
+Django==3.2.9              
+djongo==1.3.6               
+gunicorn==20.1.0            # WSGI server for running Django
+dnspython==2.2.1            # Required for mongodb+srv:// URI format (DNS resolution)
+pymongo==3.11.4             # Compatible version of PyMongo with Djongo 1.3.x
+whitenoise==5.3.0           # Optional, used for serving static files in production
+djangorestframework==3.12.4  
