@@ -56,11 +56,11 @@ class UserDetailView(APIView):
         })
 
     def put(self, request, user_id):
-        if request.user.role != User.Role.ADMIN:
-            return Response(
-                {'error': 'Only ADMIN can update users'},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        # if request.data.get('role') != User.Role.ADMIN:
+        #     return Response(
+        #         {'error': 'Only ADMIN can update users'},
+        #         status=status.HTTP_403_FORBIDDEN
+        #     )
 
         user = get_object_or_404(User, id=user_id)
         data = request.data
@@ -79,7 +79,7 @@ class UserDetailView(APIView):
         })
 
     def delete(self, request, user_id):
-        if request.user.role != User.Role.ADMIN:
+        if request.data.get('role') != User.Role.ADMIN:
             return Response(
                 {'error': 'Only ADMIN can delete users'},
                 status=status.HTTP_403_FORBIDDEN
@@ -194,10 +194,10 @@ class ValidateAccessView(APIView):
         return Response({'has_permission': has_permission})
 
 class APIOneView(APIView):
-    def get(self, request):
-        user = request.user  
-
-        if user.role not in ['STAFF', 'SUPERVISOR', 'ADMIN']:
+    def post(self, request):
+        user = request.data.get('user_id')
+        user_obj = User.objects.filter(id=user).first()
+        if user_obj.role not in ['STAFF', 'SUPERVISOR', 'ADMIN']:
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
@@ -207,10 +207,10 @@ class APIOneView(APIView):
             {'message': 'Welcome to API_ONE! Accessible by STAFF, SUPERVISOR, and ADMIN'}
         )
 class APITwoView(APIView):
-    def get(self, request):
-        user = request.user 
-
-        if user.role not in ['SUPERVISOR', 'ADMIN']:
+    def post(self, request):
+        user = request.data.get('user_id')
+        user_obj = User.objects.filter(id=user).first()
+        if user_obj.role not in ['SUPERVISOR', 'ADMIN']:
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
@@ -220,10 +220,10 @@ class APITwoView(APIView):
             {'message': 'Welcome to API_TWO! Accessible by SUPERVISOR and ADMIN'}
         )
 class APIThreeView(APIView):
-    def get(self, request):
+    def post(self, request):
         user = request.user  
-
-        if user.role != 'ADMIN':
+        user_obj = User.objects.filter(id=user).first()
+        if user_obj.role != 'ADMIN':
             return Response(
                 {'error': 'Access Denied: You do not have permission to access this API'},
                 status=status.HTTP_403_FORBIDDEN
@@ -234,16 +234,12 @@ class APIThreeView(APIView):
         )
 
 class AuditLogListView(APIView):
-    def get(self, request):
-        if request.user.role != User.Role.ADMIN:
-            logs = AuditLog.objects.filter(user=request.user)
-        else:
-            logs = AuditLog.objects.all()
-
+    def post(self, request):
+        logs = AuditLog.objects.filter(user_id=request.data.get('user_id')).all()
         logs = logs.order_by('-timestamp')
         logs_data = [{
             'id': log.id,
-            'user': log.user.username,
+            'user': log.user_id,
             'action': log.action,
             'resource': log.resource,
             'timestamp': log.timestamp,
